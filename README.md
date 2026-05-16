@@ -4,8 +4,8 @@ Non-custodial payments on Solana — official .NET SDK for [Stendly API](https:/
 
 [![NuGet version](https://img.shields.io/nuget/v/Stendly.svg)](https://www.nuget.org/packages/Stendly/)
 [![.NET](https://img.shields.io/badge/.NET-8.0+-blue.svg)](https://dotnet.microsoft.com/)
-[![License: MIT](https://img.shields.io/nuget/l/Stendly.svg)](https://github.com/stendly/stendly-dotnet/blob/main/LICENSE)
-[![Documentation](https://img.shields.io/badge/docs-latest-blue.svg)](https://docs.stendly.com/dotnet-sdk)
+[![License: MIT](https://img.shields.io/nuget/l/Stendly.svg)](https://github.com/stendly-dev/dotnet-sdk/blob/main/LICENSE)
+[![Documentation](https://img.shields.io/badge/docs-latest-blue.svg)](https://docs.stendly.com/sdk/dotnet)
 
 ## Table of Contents
 
@@ -52,8 +52,8 @@ Install-Package Stendly
 Or install from source:
 
 ```bash
-git clone https://github.com/stendly/stendly-dotnet.git
-cd stendly-dotnet/sdk/dotnet
+git clone https://github.com/stendly-dev/dotnet-sdk.git
+cd dotnet-sdk/
 dotnet build
 ```
 
@@ -69,7 +69,8 @@ dotnet build
 
 ### 1. Get your API key
 
-Log into your [Stendly Dashboard](https://dashboard.stendly.com) and navigate to API Keys. Copy your secret key (starts with `st_live_` for production or `st_test_` for development).
+Log into your [Stendly Dashboard](https://dashboard.stendly.com) and navigate to API Keys. Copy your secret key (starts
+with `st_live_`). Use `environment: "devnet"` for development and `environment: "mainnet"` for production.
 
 ### 2. Install the SDK
 
@@ -119,9 +120,11 @@ builder.Services.AddHttpClient<IStendlyClient, StendlyClient>((sp, client) =>
 
 ### API Key Format
 
-Stendly uses secret API keys that start with:
-- `st_live_` — Production (mainnet)
-- `st_test_` — Development (devnet)
+Stendly uses secret API keys that start with `st_live_`.
+
+Use the `environment` parameter to select the network:
+- `environment: "mainnet"` — Production
+- `environment: "devnet"` — Development/sandbox
 
 **Never commit API keys to version control!**
 
@@ -141,18 +144,14 @@ var client = new StendlyClient(new HttpClient(), "st_live_xxxxx"); // ❌
 
 ### Environment Selection
 
-The SDK auto-detects environment from the API key prefix:
-- `st_live_*` → mainnet (`https://api.stendly.com`)
-- `st_test_*` → devnet (`https://devnet.api.stendly.com`)
-
-You can also set it explicitly:
+The SDK uses `st_live_` key prefix for both environments. Set `environment` explicitly:
 
 ```csharp
 var client = new StendlyClient(new HttpClient(), "st_live_xxx", environment: "mainnet");
-var client = new StendlyClient(new HttpClient(), "st_test_xxx", environment: "devnet");
+var client = new StendlyClient(new HttpClient(), "st_live_xxx", environment: "devnet");
 ```
 
-**Note:** Test keys only work with devnet. Live keys only work with mainnet.
+**Note:** The same `st_live_` key prefix is used for both environments. Set `environment: "devnet"` for development/testing.
 
 ---
 
@@ -336,21 +335,21 @@ public StendlyClient(
 )
 ```
 
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `httpClient` | `HttpClient` | **required** | HttpClient instance (from IHttpClientFactory or new) |
-| `apiKey` | `string` | **required** | Secret API key (`st_live_*` or `st_test_*`) |
-| `environment` | `string` | `"mainnet"` | API environment: `"mainnet"` or `"devnet"` |
-| `maxRetries` | `int` | `2` | Maximum retry attempts for transient failures |
+| Parameter     | Type         | Default      | Description                                          |
+|---------------|--------------|--------------|------------------------------------------------------|
+| `httpClient`  | `HttpClient` | **required** | HttpClient instance (from IHttpClientFactory or new) |
+| `apiKey`      | `string`     | **required** | Secret API key (`st_live_*`)                 |
+| `environment` | `string`     | `"mainnet"`  | API environment: `"mainnet"` or `"devnet"`           |
+| `maxRetries`  | `int`        | `2`          | Maximum retry attempts for transient failures        |
 
 #### Properties
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `Intents` | `IIntentsClient` | Payment intent operations |
-| `Terminals` | `ITerminalsClient` | POS terminal management |
-| `Webhooks` | `IWebhooksClient` | Webhook configuration and verification |
-| `Merchant` | `IMerchantClient` | Merchant account data |
+| Property    | Type               | Description                            |
+|-------------|--------------------|----------------------------------------|
+| `Intents`   | `IIntentsClient`   | Payment intent operations              |
+| `Terminals` | `ITerminalsClient` | POS terminal management                |
+| `Webhooks`  | `IWebhooksClient`  | Webhook configuration and verification |
+| `Merchant`  | `IMerchantClient`  | Merchant account data                  |
 
 ### Namespaces
 
@@ -358,7 +357,9 @@ public StendlyClient(
 
 **Methods:**
 
-##### `CreateIntentAsync(int amountCents, string orderId, Guid? terminalId = null, string? idempotencyKey = null, CancellationToken cancellationToken = default)`
+#####
+
+`CreateIntentAsync(int amountCents, string orderId, Guid? terminalId = null, string? idempotencyKey = null, CancellationToken cancellationToken = default)`
 
 Creates a new payment intent.
 
@@ -413,7 +414,9 @@ Updates webhook URL. Sends `PATCH /api/b2b/merchants/webhook` with `{"webhookUrl
 await client.Webhooks.UpdateWebhookUrlAsync("https://myshop.com/webhooks/stendly");
 ```
 
-##### `ConstructEventAsync(byte[] payload, string signatureHeader, string webhookSecret, int toleranceSeconds = 300, CancellationToken cancellationToken = default)`
+#####
+
+`ConstructEventAsync(byte[] payload, string signatureHeader, string webhookSecret, int toleranceSeconds = 300, CancellationToken cancellationToken = default)`
 
 **CRITICAL SECURITY METHOD**: Verifies webhook signature. **Async** method.
 
@@ -423,6 +426,7 @@ await client.Webhooks.UpdateWebhookUrlAsync("https://myshop.com/webhooks/stendly
 - `toleranceSeconds` (`int`, optional): Max age in seconds (default 300).
 
 Returns: `Task<WebhookEvent>`
+
 - `webhookEvent.Event` contains the event type string (e.g., `"payment_intent.succeeded"`)
 
 ```csharp
@@ -469,22 +473,22 @@ Console.WriteLine($"Volume: ${stats.TotalVolumeCents / 100m:N2}");
 
 #### `PaymentIntent`
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `Id` | `Guid` | Unique intent ID |
-| `OrderId` | `string` | Your order reference |
-| `ExpectedAmountCents` | `int` | Expected amount (cents) |
-| `ReferenceAddress` | `string` | Escrow Solana address |
-| `DestinationAddress` | `string` | Merchant payout address |
-| `Status` | `PaymentIntentStatus` | Enum: `Pending`, `Paid`, `Expired`, `Cancelled`, `Underpaid` |
-| `ExpiresAt` | `DateTime` | Expiration timestamp (UTC) |
+| Property              | Type                  | Description                                                  |
+|-----------------------|-----------------------|--------------------------------------------------------------|
+| `Id`                  | `Guid`                | Unique intent ID                                             |
+| `OrderId`             | `string`              | Your order reference                                         |
+| `ExpectedAmountCents` | `int`                 | Expected amount (cents)                                      |
+| `ReferenceAddress`    | `string`              | Escrow Solana address                                        |
+| `DestinationAddress`  | `string`              | Merchant payout address                                      |
+| `Status`              | `PaymentIntentStatus` | Enum: `Pending`, `Paid`, `Expired`, `Cancelled`, `Underpaid` |
+| `ExpiresAt`           | `DateTime`            | Expiration timestamp (UTC)                                   |
 
 #### `WebhookEvent`
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `Event` | `string` | Event name (e.g., `"payment_intent.succeeded"`) |
-| `Data` | `WebhookData` | Event payload |
+| Property | Type          | Description                                     |
+|----------|---------------|-------------------------------------------------|
+| `Event`  | `string`      | Event name (e.g., `"payment_intent.succeeded"`) |
+| `Data`   | `WebhookData` | Event payload                                   |
 
 ---
 
@@ -565,13 +569,13 @@ public async Task<List<PaymentIntent>> CreateBulkIntentsAsync(
 
 ### Common Issues
 
-| Issue | Solution |
-|-------|----------|
-| `StendlyAuthenticationException` | Check API key format; regenerate if leaked |
-| `StendlyValidationException` | Validate input before API call |
-| `StendlyRateLimitException` | Implement backoff; respect `Retry-After` header |
-| `StendlyApiConnectionException` | Check internet; increase timeout; retry |
-| Webhook verification fails | Verify webhook secret; use raw byte[] payload; check clock sync |
+| Issue                            | Solution                                                        |
+|----------------------------------|-----------------------------------------------------------------|
+| `StendlyAuthenticationException` | Check API key format; regenerate if leaked                      |
+| `StendlyValidationException`     | Validate input before API call                                  |
+| `StendlyRateLimitException`      | Implement backoff; respect `Retry-After` header                 |
+| `StendlyApiConnectionException`  | Check internet; increase timeout; retry                         |
+| Webhook verification fails       | Verify webhook secret; use raw byte[] payload; check clock sync |
 
 ---
 
@@ -583,11 +587,10 @@ MIT License. See [LICENSE](LICENSE).
 
 ### Links
 
-- 📖 [API Documentation](https://docs.stendly.com/api)
-- 🐙 [GitHub Repository](https://github.com/stendly/stendly-dotnet)
+- 📖 [API Documentation](https://docs.stendly.com/sdk/dotnet)
+- 🐙 [GitHub Repository](https://github.com/stendly-dev/dotnet-sdk)
 - 📦 [NuGet Package](https://www.nuget.org/packages/Stendly/)
 - 🏠 [Stendly Website](https://stendly.com)
-- 💬 [Discord Community](https://discord.gg/stendly)
 
 ---
 

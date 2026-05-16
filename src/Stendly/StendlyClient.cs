@@ -44,7 +44,7 @@ public sealed class StendlyClient : IStendlyClient, IDisposable
         /// <summary>
         /// Development/sandbox API base URL.
         /// </summary>
-        public const string Devnet = "https://devnet.api.stendly.com";
+        public const string Devnet = "https://api-devnet.stendly.com";
     }
 
     /// <summary>
@@ -58,7 +58,8 @@ public sealed class StendlyClient : IStendlyClient, IDisposable
     /// The client is NOT disposed by this class — caller owns its lifetime.
     /// </param>
     /// <param name="apiKey">
-    /// Merchant API key. Must start with "st_live_" (production) or "st_test_" (development).
+    /// Merchant API key. Must start with "st_live_".
+    /// Use environment="devnet" for development/testing.
     /// </param>
     /// <param name="environment">
     /// API environment: "mainnet" (production) or "devnet" (sandbox).
@@ -82,12 +83,10 @@ public sealed class StendlyClient : IStendlyClient, IDisposable
             throw new ArgumentNullException(nameof(apiKey));
 
         // Validate API key format
-        if (!apiKey.StartsWith("st_live_", StringComparison.Ordinal) &&
-            !apiKey.StartsWith("st_test_", StringComparison.Ordinal))
+        if (!apiKey.StartsWith("st_live_", StringComparison.Ordinal))
         {
             throw new ArgumentException(
-                "Invalid API key format. Must start with 'st_live_' (production) " +
-                "or 'st_test_' (development).",
+                "Invalid API key format. Must start with 'st_live_'.",
                 nameof(apiKey));
         }
 

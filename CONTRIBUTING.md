@@ -6,8 +6,8 @@ We welcome contributions! This document outlines the process.
 
 ```bash
 # Clone the repository
-git clone https://github.com/stendly/stendly-dotnet.git
-cd stendly-dotnet/sdk/dotnet
+git clone https://github.com/stendly-dev/dotnet-sdk.git
+cd dotnet-sdk/
 
 # Build the project
 dotnet build
@@ -58,4 +58,4 @@ dotnet test
 
 ## Questions?
 
-Open a [GitHub Discussion](https://github.com/stendly/stendly-dotnet/discussions) or email support@stendly.com.
+Open a [GitHub Discussion](https://github.com/stendly-dev/dotnet-sdk/discussions) or email support@stendly.com.

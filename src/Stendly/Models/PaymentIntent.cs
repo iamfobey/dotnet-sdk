@@ -27,6 +27,12 @@ public record PaymentIntent
     public int ExpectedAmountCents { get; init; }
 
     /// <summary>
+    /// Amount actually paid in cents (0 if not yet paid).
+    /// </summary>
+    [JsonPropertyName("paidAmountCents")]
+    public int PaidAmountCents { get; init; }
+
+    /// <summary>
     /// Generated escrow address for the payment (SPL token account).
     /// </summary>
     [JsonPropertyName("referenceAddress")]

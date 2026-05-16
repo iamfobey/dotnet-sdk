@@ -25,7 +25,7 @@ internal sealed class StendlyHttpClient : IDisposable
     /// to support IHttpClientFactory and DI scenarios.
     /// </summary>
     /// <param name="httpClient">The HttpClient instance (from DI or IHttpClientFactory).</param>
-    /// <param name="apiKey">Merchant API key (st_live_* or st_test_*).</param>
+    /// <param name="apiKey">Merchant API key (st_live_*).</param>
     /// <param name="maxRetries">Maximum retry attempts for transient failures.</param>
     public StendlyHttpClient(HttpClient httpClient, string apiKey, int maxRetries = 2)
     {
@@ -33,7 +33,7 @@ internal sealed class StendlyHttpClient : IDisposable
         _apiKey = apiKey ?? throw new ArgumentNullException(nameof(apiKey));
         _maxRetries = maxRetries;
 
-        _userAgent = new ProductInfoHeaderValue("stendly-dotnet-sdk", "0.1.0");
+        _userAgent = new ProductInfoHeaderValue("dotnet-sdk-sdk", "0.1.0");
     }
 
     /// <summary>

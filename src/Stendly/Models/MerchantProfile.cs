@@ -44,4 +44,10 @@ public record MerchantProfile
     /// </summary>
     [JsonPropertyName("rawApiKey")]
     public string? RawApiKey { get; init; }
+
+    /// <summary>
+    /// KYB verification status (pending, verified, rejected).
+    /// </summary>
+    [JsonPropertyName("verificationStatus")]
+    public string? VerificationStatus { get; init; }
 }

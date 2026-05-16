@@ -11,6 +11,6 @@
 - Merchant: `GetProfileAsync`, `GetStatsAsync`
 - Typed exceptions: `StendlyException`, `StendlyAuthenticationException`, `StendlyValidationException`, `StendlyRateLimitException`, `StendlyApiConnectionException`, `StendlySignatureVerificationException`
 - Data models: `PaymentIntent`, `Terminal`, `MerchantProfile`, `MerchantStats`, `DailyStats`, `WebhookEvent`, `WebhookData`
-- Automatic API key prefix validation (`st_live_` / `st_test_`)
+- Automatic API key prefix validation (`st_live_`)
 - Environment auto-detection from API key
 - XML documentation file generation
